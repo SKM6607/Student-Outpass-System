@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Return Entry | SRM Hostel Outpass</title>
+
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" defer src="returnEntry.js"></script>
+</head>
+
+<body>
+
+<header class="navbar">
+    <img src="./images/img.png" class="logo" alt="SRM Logo" />
+    <h1>SRM Hostel Outpass – Return Entry</h1>
+</header>
+
+<div id="message"></div>
+
+<div class="container form-container">
+    <h2>Return Entry Form</h2>
+
+    <form id="returnEntryForm">
+        <label>Return Date:</label>
+        <input type="date" id="returnDate" required />
+
+        <label>Return Day:</label>
+        <input type="text" id="returnDay" placeholder="Enter day (Monday to Sunday)" required />
+
+        <label>Return Time:</label>
+        <input type="time" id="returnTime" required />
+
+        <label>Remarks (optional):</label>
+        <textarea id="remarks" rows="3"
+                  placeholder="Any delay or special notes..."></textarea>
+
+        <button type="submit" class="btn">
+            Submit Return Entry
+        </button>
+    </form>
+</div>
+
+<footer>
+    <p>© SRM Institute of Science and Technology</p>
+</footer>
+
+</body>
+</html>

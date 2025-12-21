@@ -7,40 +7,49 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.sql.*;
-
-@WebServlet("/displayOutpass")
+@WebServlet("/student_outpasses")
 public class DisplayOutpassServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest req,HttpServletResponse res) throws IOException {
+        doGet(req,res);
+    }
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
-            throws ServletException, IOException {
+            throws IOException {
 
-        String rId = req.getParameter("rId"); // ✅ Read from request, not session
-        JSONArray jsonArray = new JSONArray();
         res.setContentType("application/json");
 
-        if (rId == null || rId.isEmpty()) {
-            res.getWriter().print(jsonArray);
+        String regNo = req.getParameter("registeredNumber");
+        if (regNo == null || regNo.isEmpty()) {
+            res.getWriter().print("[]");
             return;
         }
 
         try (Connection conn = DBConnector.getConnection()) {
-            PreparedStatement ps = conn.prepareStatement(
-                    "SELECT reason, from_date, to_date, status FROM outpass_requests WHERE rId=? ORDER BY requestId DESC"
-            );
-            ps.setString(1, rId);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
 
-                JSONObject obj = new JSONObject();
-                obj.put("reason", rs.getString("reason"));
-                obj.put("fromDate", rs.getString("from_date"));
-                obj.put("toDate", rs.getString("to_date"));
-                obj.put("status", rs.getString("status"));
-                jsonArray.put(obj);
+            PreparedStatement ps = conn.prepareStatement("SELECT reason, from_date, to_date, status FROM outpass_requests WHERE studentId = (SELECT id FROM students WHERE registeredNumber = ?)");
+
+            ps.setString(1, regNo);
+            ResultSet rs = ps.executeQuery();
+
+            StringBuilder json = new StringBuilder("[");
+            boolean first = true;
+
+            while (rs.next()) {
+                if (!first) json.append(",");
+                first = false;
+
+                json.append("{")
+                        .append("\"reason\":\"").append(rs.getString("reason")).append("\",")
+                        .append("\"from_date\":\"").append(rs.getString("from_date")).append("\",")
+                        .append("\"to_date\":\"").append(rs.getString("to_date")).append("\",")
+                        .append("\"status\":\"").append(rs.getString("status")).append("\"")
+                        .append("}");
             }
 
-            res.getWriter().print(jsonArray);
+            json.append("]");
+            res.getWriter().write(json.toString());
+
         } catch (Exception e) {
-            e.printStackTrace();
+            res.getWriter().print("[]");
         }
     }
 }

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Registration | SRM Outpass</title>
     <link rel="stylesheet" href="style.css" />
-    <script defer src="script.js"></script>
+    <script type = "module" defer src="script.js"></script>
 </head>
 
 <body>
@@ -19,18 +19,24 @@
 
     <div class="container form-container">
         <h2>Student Registration</h2>
-        <form id="registerForm" action="/register">
-            <label>Full Name:</label>
-            <input type="text" id="name" required />
+        <form id="registerForm" >
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" placeholder="Enter full name" required />
 
-            <label>Registration Number:</label>
-            <input type="text" id="rId" required />
+            <label for="registeredNumber">Registration Number:</label>
+            <input type="text" id="registeredNumber" required placeholder="RA24XXXXXXXXXX"/>
 
-            <label>SRM Email ID:</label>
-            <input type="email" id="email" placeholder="example@srmist.edu.in" required />
+            <label for="email">SRM Email ID:</label>
+            <input type="email" id="email" placeholder="ab1234@srmist.edu.in" required />
 
-            <label>Create Password:</label>
-            <input type="password" id="password" required />
+            <label for="sNo">Student Mobile Number:</label>
+            <input type="number" id="sNo" placeholder="+91 XXXXXXXXXX" required />
+
+            <label for="pNo">Parent Mobile Number:</label>
+            <input type="number" id="pNo" placeholder="+91 XXXXXXXXXX" required />
+
+            <label for="password">Create Password:</label>
+            <input type="password" id="password" placeholder="Min 8 chars, 1 number, 1 symbol" required />
 
             <button type="submit" class="btn">Register</button>
         </form>
@@ -38,27 +44,9 @@
         <p class="switch-link">Already have an account? <a href="student_login.html">Login here</a></p>
     </div>
 
-    <footer>
+    <footer style="margin-top: 30px">
         <p>© SRM Institute of Science and Technology</p>
     </footer>
-
-    <script>
-        document.getElementById("registerForm").addEventListener("submit", (e) => {
-            e.preventDefault();
-            const name = document.getElementById("name").value.trim();
-            const rId = document.getElementById("rId").value.trim();
-            const email = document.getElementById("email").value.trim();
-            const password = document.getElementById("password").value.trim();
-
-            if (!email.endsWith("@srmist.edu.in")) {
-                alert("Please use your SRM email ID!");
-                return;
-            }
-
-            registerStudent(name, rId,email, password);
-            document.getElementById("registerForm").reset();
-        });
-    </script>
 </body>
 
 </html>

@@ -8,31 +8,33 @@ import jakarta.servlet.http.*;
 
 @WebServlet("/applyOutpass")
 public class ApplyOutpassServlet extends HttpServlet {
+
+    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
 
         res.setContentType("text/plain");
 
-        String roll = req.getParameter("rId");   // <-- correct
-        // <-- this is rId (example: "SRM123")
+        String registeredNumber = req.getParameter("registeredNumber");
+        String name = req.getParameter("name");
         String reason = req.getParameter("reason");
         String fromDate = req.getParameter("fromDate");
         String toDate = req.getParameter("toDate");
 
-        if (roll == null || roll.isEmpty()) {
+        if (registeredNumber == null || registeredNumber.isEmpty()) {
             res.getWriter().print("missing_rId");
             return;
         }
 
         try (Connection conn = DBConnector.getConnection()) {
 
-            // First fetch the student.id (numeric)
+            // 1. Get student.id
             PreparedStatement findId = conn.prepareStatement(
-                    "SELECT id FROM students WHERE rId = ?"
+                    "SELECT id FROM students WHERE registeredNumber = ?"
             );
-            findId.setString(1, roll);
-            ResultSet rs = findId.executeQuery();
+            findId.setString(1, registeredNumber);
 
+            ResultSet rs = findId.executeQuery();
             if (!rs.next()) {
                 res.getWriter().print("student_not_found");
                 return;
@@ -40,17 +42,20 @@ public class ApplyOutpassServlet extends HttpServlet {
 
             int studentId = rs.getInt("id");
 
-            // Insert outpass with studentId
+            // 2. Insert outpass entry
             PreparedStatement ps = conn.prepareStatement(
-                    "INSERT INTO outpass_requests (requestId, reason, from_date, to_date) VALUES (?, ?, ?, ?)"
+                    "INSERT INTO outpass_requests (studentId, reason, from_date, to_date, name) " +
+                            "VALUES (?, ?, ?, ?, ?)"
             );
 
             ps.setInt(1, studentId);
             ps.setString(2, reason);
             ps.setString(3, fromDate);
             ps.setString(4, toDate);
+            ps.setString(5, name);
 
             int rows = ps.executeUpdate();
+
             if (rows > 0) {
                 res.getWriter().print("success");
             } else {
@@ -62,6 +67,4 @@ public class ApplyOutpassServlet extends HttpServlet {
             res.getWriter().print("error");
         }
     }
-
-
 }

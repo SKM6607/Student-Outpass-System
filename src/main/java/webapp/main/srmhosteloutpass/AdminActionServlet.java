@@ -34,7 +34,7 @@ public class AdminActionServlet extends HttpServlet {
 
         try (Connection conn = DBConnector.getConnection()) {
             PreparedStatement ps = conn.prepareStatement(
-                    "UPDATE outpass_requests SET status=? WHERE requestId=?"
+                    "UPDATE outpass_requests SET status=? WHERE rId=?"
             );
             ps.setString(1, newStatus);
             ps.setInt(2, requestId);

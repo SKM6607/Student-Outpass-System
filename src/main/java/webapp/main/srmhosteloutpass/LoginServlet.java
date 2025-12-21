@@ -31,15 +31,13 @@ public class LoginServlet extends HttpServlet {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                String rId = rs.getString("rId");
+                String registeredNumber = rs.getString("registeredNumber");
                 String name = rs.getString("name");
 
                 HttpSession session = req.getSession();
-                session.setAttribute("studentId", rId);
+                session.setAttribute("studentId", registeredNumber);
                 session.setAttribute("studentName", name);
-
-                // Match this format with your JavaScript fetch handler
-                out.print("success|" + name + "|" + rId);
+                out.print("success|" + name + "|" + registeredNumber);
             } else {
                 out.print("invalid");
             }

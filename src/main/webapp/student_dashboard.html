@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Student Dashboard | SRM Outpass</title>
     <link rel="stylesheet" href="style.css" />
-    <script defer src="script.js"></script>
 </head>
 
 <body>
@@ -15,7 +14,7 @@
         <img src="./images/img.png" class="logo" alt="SRM Logo" />
         <h1 class="dashboard-title">Student Dashboard</h1>
     </div>
-    <button class="logout-btn" onclick="logoutStudent()">Logout</button>
+    <button class="logout-btn">Logout</button>
 </header>
 
 <div id="message"></div>
@@ -23,17 +22,25 @@
 <div class="container">
     <h2>Apply for Outpass</h2>
     <form id="outpassForm">
-        <label>Reason:</label>
-        <input type="text" id="reason" required />
+        <label><b>Leaving Date</b>:</label>
+        <input type="date" id="leavingDate" required />
 
-        <label>From Date:</label>
-        <input type="date" id="fromDate" required />
+        <label><b>Leaving Day</b>:</label>
+        <input readonly type="text" id="leavingDay" placeholder="Monday - Sunday" required />
 
-        <label>To Date:</label>
-        <input type="date" id="toDate" required />
-        <br>
+        <label><b>Leaving Time</b>:</label>
+        <input type="time" id="leavingTime" required />
 
-        <button type="submit" class="btn">APPLY</button>
+        <label><b>Expected Return Date</b>:</label>
+        <input type="date" id="expectedReturnDate" required />
+
+        <label><b>Expected Return Day</b>:</label>
+        <input readonly type="text" id="expectedReturnDay" placeholder="Monday - Sunday" required />
+
+        <label><b>Reason of Leaving</b>:</label>
+        <input type="text" id="reasonOfLeaving" required />
+
+        <button type="submit" class="btn"><b>APPLY</b></button>
     </form>
 
     <h2 style="margin-top: 30px;">Your Outpass Requests</h2>
@@ -43,18 +50,6 @@
 <footer>
     <p>© SRM Institute of Science and Technology</p>
 </footer>
-
-<script>
-    const form = document.getElementById("outpassForm");
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const reason = document.getElementById("reason").value;
-        const fromDate = document.getElementById("fromDate").value;
-        const toDate = document.getElementById("toDate").value;
-        applyOutpass(reason, fromDate, toDate);
-        form.reset();
-    });
-</script>
+<script type="module" defer src="applyOutpass.js"></script>
 </body>
-
 </html>
