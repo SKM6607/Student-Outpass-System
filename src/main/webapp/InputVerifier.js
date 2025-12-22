@@ -1,12 +1,20 @@
 export class InputVerifier {
-    static verifyRegistration(nameDOM, registeredNumberDOM, emailDOM, passwordDOM, callback = null, ...args) {
+    static #isNumber(str1,str2){
+        return Number.isInteger(str1) && Number.isInteger(str2);
+    }
+    static verifyRegistration(nameDOM, registeredNumberDOM, emailDOM, passwordDOM, numberDOM, parentNumberDOM, callback = null, ...args) {
         if (!callback) {
             callback = alert
         }
         const name = document.getElementById(nameDOM).value.trim();
         const registeredNumber = document.getElementById(registeredNumberDOM).value.trim();
         const [email, password] = this.#verifyEmailAndPassword(emailDOM, passwordDOM, callback, ...args);
-        console.log([name, registeredNumber, email, password])
+        const [sNo, pNo] = [document.getElementById(numberDOM).value.trim(), document.getElementById(parentNumberDOM).value.trim()]
+        const NUMBER_LENGTH = 10;
+        if (sNo.length !== NUMBER_LENGTH || pNo.length !== NUMBER_LENGTH || this.#isNumber(sNo,pNo)) {
+            callback("Please enter a valid Number!", ...args);
+            return null;
+        }
         if (!registeredNumber.includes("RA")) {
             callback("Please enter a valid Register Number!", ...args);
             return null;
@@ -15,7 +23,7 @@ export class InputVerifier {
             callback("Name Field must contain only characters!", ...args);
             return null;
         }
-        return [registeredNumber,name, email, password];
+        return [name, registeredNumber, email, password, sNo, pNo];
     }
 
     static #nameVerifier(name) {
@@ -35,6 +43,7 @@ export class InputVerifier {
         }
         return [email, password];
     }
+
     static verifyLogin(emailDOM, passwordDOM, callback = null, ...args) {
         if (!callback) callback = alert
         return this.#verifyEmailAndPassword(emailDOM, passwordDOM, callback, ...args);

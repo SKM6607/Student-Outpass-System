@@ -1,4 +1,6 @@
 'use strict';
+import {InputVerifier} from "./InputVerifier.js";
+
 export const STATUS = Object.freeze({
     INFO: "info",
     SUCCESS: "success",
@@ -82,13 +84,15 @@ if (window.location.pathname.endsWith("register.html")) {
     document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("registerForm").addEventListener("submit", (e) => {
                 e.preventDefault();
-                const name = document.getElementById("name").value;
-                const reg = document.getElementById("registeredNumber").value;
-                const email = document.getElementById("email").value;
-                const pass = document.getElementById("password").value;
-                const s = document.getElementById('sNo').value;
-                const p = document.getElementById('pNo').value;
-                new Student(reg, name, email, pass, s, p);
+                const [name, reg, email, password, sNo, pNo] = InputVerifier.verifyRegistration(
+                    "name",
+                    "registeredNumber",
+                    "email",
+                    "password",
+                    "sNo",
+                    "pNo",
+                    showMessage, STATUS.ERROR);
+                new Student(reg, name, email, password, sNo, pNo);
             });
         }
     );

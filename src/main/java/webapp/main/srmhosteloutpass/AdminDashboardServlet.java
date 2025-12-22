@@ -20,22 +20,33 @@ public class AdminDashboardServlet extends HttpServlet {
         try (Connection conn = DBConnector.getConnection()) {
 
             PreparedStatement ps = conn.prepareStatement(
-                    "SELECT name,studentId, rId, reason, from_date, to_date, status " +
-                            "FROM outpass_requests WHERE status = 'Pending' ORDER BY rId DESC"
+                    "SELECT " +
+                            "o.name, o.studentId, o.rId, o.reason, o.from_date, o.to_date, o.status, " +
+                            "s.studentMobileNumber, s.parentMobileNumber " +
+                            "FROM outpass_requests o " +
+                            "JOIN students s ON o.studentId = s.id " +
+                            "WHERE o.status = 'Pending' " +
+                            "ORDER BY o.rId DESC"
             );
-
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 JSONObject o = new JSONObject();
+
                 o.put("name", rs.getString("name"));
-                o.put("studentId", rs.getString("studentId"));
+                o.put("studentId", rs.getInt("studentId"));
                 o.put("rId", rs.getInt("rId"));
                 o.put("reason", rs.getString("reason"));
-                o.put("fromDate", rs.getString("from_date"));
-                o.put("toDate", rs.getString("to_date"));
+                o.put("fromDate", rs.getDate("from_date").toString());
+                o.put("toDate", rs.getDate("to_date").toString());
                 o.put("status", rs.getString("status"));
+
+                // new fields
+                o.put("studentMobileNumber", rs.getString("studentMobileNumber"));
+                o.put("parentMobileNumber", rs.getString("parentMobileNumber"));
+
                 arr.put(o);
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();

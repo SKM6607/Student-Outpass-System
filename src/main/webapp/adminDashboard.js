@@ -39,6 +39,8 @@ function loadAdminOutpasses() {
                     <h5>Reason:${escapeHtml(item.reason)}</h5>
                     <p><b>From:</b> ${item.fromDate} &nbsp; <b>To:</b> ${item.toDate}</p>
                     <p><b>Status:</b> ${item.status || "Pending"}</p>
+                    <p><b>Contact (Student):</b> ${item.studentMobileNumber}</p>
+                    <p><b>Contact (Parent):</b> ${item.parentMobileNumber}</p>
                     <div style="margin-top:8px; display:flex; gap:8px;">
                         <button class="btn-approve" data-id="${item.rId}">Approve</button>
                         <button class="btn-reject" data-id="${item.rId}">Reject</button>
