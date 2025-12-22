@@ -1,18 +1,16 @@
-import { LOGGED_IN_STUDENT } from "./script.js";
+document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.querySelector(".logout-btn");
 
-const profileBtn = document.getElementById("profileBtn");
-const profileInitial = document.getElementById("profileInitial");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
 
-const studentData = JSON.parse(localStorage.getItem(LOGGED_IN_STUDENT));
+            // Clear all stored login/session data
+            localStorage.clear();
+            sessionStorage.clear();
 
-if (!studentData) {
-    window.location.href = "student_login.html";
-}
-
-// Set initial letter
-profileInitial.textContent = studentData.name.charAt(0).toUpperCase();
-
-// Navigate to profile page
-profileBtn.addEventListener("click", () => {
-    window.location.href = "student_profile.html";
+            // Redirect to homepage / login page
+            window.location.href = "index.html";
+            // OR use: "student_login.html" if that is your entry page
+        });
+    }
 });

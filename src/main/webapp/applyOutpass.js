@@ -100,8 +100,19 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-function logoutStudent() {
-    localStorage.removeItem(LOGGED_IN_STUDENT);
-    Message.showMessage("Logging you out...", STATUS.INFO);
-    setTimeout(() => (window.location.href = "index.html"), 1000);
-}
+document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.querySelector(".logout-btn");
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+
+            // Clear all stored login/session data
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // Redirect to homepage / login page
+            window.location.href = "index.html";
+            // OR use: "student_login.html" if that is your entry page
+        });
+    }
+});

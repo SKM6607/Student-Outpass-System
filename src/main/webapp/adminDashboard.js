@@ -22,8 +22,6 @@ function loadAdminOutpasses() {
             container.style.display="block";
             if (!list || list.length === 0) {
                 container.innerHTML = "<p>No outpass requests.</p>";
-                if (msg) msg.innerHTML = "No requests found.";
-                return;
             }
 
             if (msg) msg.innerHTML = ""; // clear
@@ -147,11 +145,3 @@ function escapeHtml(s) {
     if (!s) return "";
     return s.replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 }
-
-function logoutAdmin() {
-    localStorage.removeItem(LOGGED_IN_STUDENT);
-    Message.showMessage("Logging you out...", STATUS.INFO);
-    setTimeout(() => (window.location.href = "index.html"), 1000);
-}
-
-window.logoutAdmin = logoutAdmin

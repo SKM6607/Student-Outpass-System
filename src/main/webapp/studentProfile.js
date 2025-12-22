@@ -1,103 +1,58 @@
-import {LOGGED_IN_STUDENT} from "./script.js";
+import { LOGGED_IN_STUDENT } from "./script.js";
 
 const student = JSON.parse(localStorage.getItem(LOGGED_IN_STUDENT));
 
 if (!student) {
     window.location.href = "student_login.html";
 }
+
 const studentDetailsDiv = document.getElementById("studentDetails");
-const historyTable = document.getElementById("outpassHistory");
-let [s, p] = []
-fetch(`studentDetails`
-    , {
-        method: "POST",
-        headers: {"Content-Type": "application/x-www-form-urlencoded"},
-        body: `registeredNumber=${encodeURIComponent(student.registeredNumber)}`
-    })
+
+let studentMobile = "";
+let parentMobile = "";
+
+/* ------------------ STUDENT DETAILS ------------------ */
+fetch(`studentDetails`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: `registeredNumber=${encodeURIComponent(student.registeredNumber)}`
+})
     .then(res => res.text())
     .then(data => {
-        const details = data.split('|')
-        console.log(details)
-        if (data.startsWith('success')) {
-            s = details[1];
-            p = details[2];
+        const details = data.split('|');
+
+        if (data.startsWith("success")) {
+            studentMobile = details[1];
+            parentMobile = details[2];
         } else {
             console.error(details[1]);
         }
-    }).finally(() => {
+    })
+    .finally(() => {
         studentDetailsDiv.innerHTML = `
-    <p><strong>Name:</strong> ${student.name}</p>
-    <p><strong>Register Number:</strong> ${student.registeredNumber}</p>
-    <p><strong>Email:</strong> ${student.email}</p>
-    <p><strong>Student Mobile Number:</strong> ${s}</p>
-    <p><strong>Parent Mobile Number:</strong> ${p}</p>
-`;
-    }
-)
-// Fetch outpass history from backend
-fetch(`student_outpasses?registeredNumber=${student.registeredNumber}`)
+            <p><strong>Name:</strong> ${student.name}</p>
+            <p><strong>Register Number:</strong> ${student.registeredNumber}</p>
+            <p><strong>Email:</strong> ${student.email}</p>
+            <p><strong>Student Mobile Number:</strong> ${studentMobile}</p>
+            <p><strong>Parent Mobile Number:</strong> ${parentMobile}</p>
+        `;
+    });
+
+/* ------------------ OUTPASS HISTORY ------------------ */
+fetch(`student_outpasses?registeredNumber=${encodeURIComponent(student.registeredNumber)}`)
     .then(res => res.json())
     .then(data => {
 
         document.getElementById("outpassContainer").innerHTML = `
-            <style>
-                .outpass-table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    margin-top: 15px;
-                    font-family: Arial, sans-serif;
-                    background-color: #fff;
-                }
-
-                .outpass-table th,
-                .outpass-table td {
-                    padding: 10px 12px;
-                    border: 1px solid #ddd;
-                    text-align: left;
-                }
-
-                .outpass-table thead {
-                    background-color: #2c3e50;
-                    color: #fff;
-                }
-
-                .outpass-table tbody tr:nth-child(even) {
-                    background-color: #f8f9fa;
-                }
-
-                .outpass-table tbody tr:hover {
-                    background-color: #eef2f7;
-                }
-
-                .no-data {
-                    text-align: center;
-                    font-style: italic;
-                    color: #666;
-                }
-
-                .status-approved {
-                    color: #2ecc71;
-                    font-weight: bold;
-                }
-
-                .status-pending {
-                    color: #f39c12;
-                    font-weight: bold;
-                }
-
-                .status-rejected {
-                    color: #e74c3c;
-                    font-weight: bold;
-                }
-            </style>
-
             <table class="outpass-table">
                 <thead>
                     <tr>
                         <th>Reason</th>
                         <th>From Date</th>
                         <th>To Date</th>
-                        <th>Status</th>
+                        <th>Actual Returned Date</th>
+                        <th>Approval Status</th>
+                        <th>Outpass State</th>
                     </tr>
                 </thead>
                 <tbody id="historyTable"></tbody>
@@ -106,28 +61,54 @@ fetch(`student_outpasses?registeredNumber=${student.registeredNumber}`)
 
         const historyTable = document.getElementById("historyTable");
 
-        if (data.length === 0) {
+        if (!data || data.length === 0) {
             historyTable.innerHTML = `
                 <tr>
-                    <td colspan="4" class="no-data">No records found</td>
+                    <td colspan="6" class="no-data">No records found</td>
                 </tr>
             `;
             return;
         }
 
         data.forEach(o => {
-            const statusClass =
+
+            const approvalClass =
                 o.status === "APPROVED" ? "status-approved" :
                     o.status === "PENDING" ? "status-pending" :
                         "status-rejected";
+
+            const outpassStateClass =
+                o.outpass_state === "OPEN" ? "status-pending" : "status-approved";
 
             historyTable.innerHTML += `
                 <tr>
                     <td>${o.reason}</td>
                     <td>${o.from_date}</td>
                     <td>${o.to_date}</td>
-                    <td class="${statusClass}">${o.status}</td>
+                    <td>${o.actual_return_date ?? "-"}</td>
+                    <td class="${approvalClass}">${o.status}</td>
+                    <td class="${outpassStateClass}">${o.outpass_state}</td>
                 </tr>
             `;
         });
+    })
+    .catch(err => {
+        console.error("Error loading outpass history:", err);
     });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.querySelector(".logout-btn");
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+
+            // Clear all stored login/session data
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // Redirect to homepage / login page
+            window.location.href = "index.html";
+            // OR use: "student_login.html" if that is your entry page
+        });
+    }
+});
