@@ -2,10 +2,10 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Student Dashboard | SRM Outpass</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css"/>
     <style>
         .navbar-right {
             display: flex;
@@ -62,30 +62,51 @@
 <div id="message"></div>
 
 <div class="container">
-    <h2>Apply for Outpass</h2>
+    <h2>Apply Outpass</h2>
     <form id="outpassForm">
-        <label><b>Leaving Date</b>:</label>
-        <input type="date" id="leavingDate" required />
+        <label><b>Type of Outpass:</b></label>
+        <div id="radio-choice">
+            <label>
+                <input type="radio" id="medical-leave" name="fav_language" value="medical" checked>Medical Leave
+            </label>
+            <label>
+                <input type="radio" id="normal-leave" name="fav_language" value="normal">Normal Outing
+            </label>
+            <label>
+                <input type="radio" id="other-leave" name="fav_language" value="other">Other
+            </label>
+        </div>
+        <label for="leavingDate"><b>Leaving Date</b>:</label>
+        <input type="date" id="leavingDate" required/>
 
-        <label><b>Leaving Day</b>:</label>
-        <input readonly type="text" id="leavingDay" placeholder="Monday - Sunday" required />
+        <label for="leavingDay"><b>Leaving Day</b>:</label>
+        <input readonly type="text" id="leavingDay" placeholder="Monday - Sunday" required/>
 
-        <label><b>Leaving Time</b>:</label>
-        <input type="time" id="leavingTime" required />
+        <label for="leavingTime"><b>Leaving Time</b>:</label>
+        <input type="time" id="leavingTime" required/>
 
-        <label><b>Expected Return Date</b>:</label>
-        <input type="date" id="expectedReturnDate" required />
+        <label for="expectedReturnDate"><b>Expected Return Date</b>:</label>
+        <input type="date" id="expectedReturnDate" required/>
 
-        <label><b>Expected Return Day</b>:</label>
-        <input readonly type="text" id="expectedReturnDay" placeholder="Monday - Sunday" required />
+        <label for="expectedReturnDay"><b>Expected Return Day</b>:</label>
+        <input readonly type="text" id="expectedReturnDay" placeholder="Monday - Sunday" required/>
 
-        <label><b>Reason of Leaving</b>:</label>
-        <input type="text" id="reasonOfLeaving" required />
+        <label for="expectedReturnTime"><b>Return Time</b>:</label>
+        <input type="time" id="expectedReturnTime" required/>
 
+        <label id="proof-image-label" for="proof-image">Proof Image Upload:</label>
+        <input type="file" id="proof-image" alt="Proof Image(Maximum 4MB)" name="Proof Image(Max 4 MB)"  accept=".jpeg,.jpg,.png" required>
+
+        <label for="reasonOfLeaving"><b>Reason of Leaving</b>:</label>
+        <!--        <textarea id="reasonOfLeaving" maxlength="250"-->
+        <!--                  placeholder="Enter the reason (max: 250 characters) " required></textarea>-->
+        <input id="reasonOfLeaving" type="text" placeholder="Enter Medical Reason" required>
         <button type="submit" class="btn"><b>APPLY</b></button>
     </form>
-
-    <h2 style="margin-top: 30px;">Your Outpass Requests</h2>
+    <div id="imageOverlay" class="image-overlay">
+        <img id="overlayImg">
+    </div>
+    <h2 style="margin-top: 30px;">Your Previous Outpass Requests</h2>
     <div id="outpassCards" class="card-container"></div>
 </div>
 

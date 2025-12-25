@@ -2,10 +2,11 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Return Entry | SRM Hostel Outpass</title>
-    <link rel="stylesheet" href="style.css" />
+
+    <link rel="stylesheet" href="style.css"/>
     <style>
         .navbar-right {
             display: flex;
@@ -43,7 +44,6 @@
             background-color: #e6e6e6;
         }
     </style>
-    <script type="module" defer src="returnEntry.js"></script>
 </head>
 
 <body>
@@ -63,33 +63,50 @@
 
 <div id="message"></div>
 
-<div class="container form-container">
-    <h2>Return Entry Form</h2>
+<div class="container return-entry-details">
+    <h2>Return Entry</h2>
+    <div class="container return-entry-details">
+        <div class="details-list" id="outpass-id">
+            <b>Outpass ID:</b>
+            <span class="value"></span>
+        </div>
 
-    <form id="returnEntryForm">
-        <label>Return Date:</label>
-        <input type="date" id="returnDate" required />
+        <div class="details-list" id="from-date">
+            <b>Outpass from:</b>
+            <span class="value"></span>
+        </div>
 
-        <label>Return Day:</label>
-        <input type="text" id="returnDay" placeholder="Enter day (Monday to Sunday)" required />
+        <div class="details-list" id="to-date">
+            <b>Outpass till:</b>
+            <span class="value"></span>
+        </div>
 
-        <label>Return Time:</label>
-        <input type="time" id="returnTime" required />
+        <div class="details-list" id="number-of-days">
+            <b>Number of Days:</b>
+            <span class="value"></span>
+        </div>
 
-        <label>Remarks (optional):</label>
-        <textarea id="remarks" rows="3"
-                  placeholder="Any delay or special notes..."></textarea>
+        <div class="details-list" id="applied-during">
+            <b>Outpass Applied on:</b>
+            <span class="value"></span>
+        </div>
 
-        <button type="submit" class="btn">
-            Submit Return Entry
-        </button>
-    </form>
+        <div class="details-list" id="status-of-outpass">
+            <b>Status Of Outpass:</b>
+            <span class="value"></span>
+        </div>
+    </div>
+    <main id="qr-canvas-container">
+        <canvas id="qr-canvas"></canvas>
+    </main>
 </div>
 
 <footer class="app-footer">
     <p>© SRM Institute of Science and Technology</p>
     <button class="logout-btn">Logout</button>
 </footer>
+
+<script type="module" defer src="returnEntry.js"></script>
 
 </body>
 </html>
