@@ -1,15 +1,6 @@
 'use strict';
+import {STATUS,showMessage} from "./Utility.js"
 import {InputVerifier} from "./InputVerifier.js";
-export const SEC=1e3;
-export const STATUS = Object.freeze({
-    INFO: "info",
-    SUCCESS: "success",
-    ERROR: "error",
-});
-export const LOGGED_IN_STUDENT = "loggedInStudent";
-export function returnToHome(){
-    window.location.href=`home.html`
-}
 class Student {
     registeredNumber = "";
     name = "";
@@ -17,7 +8,6 @@ class Student {
     password = "";
     sNo = "";
     pNo = "";
-
     constructor(registeredNumber, name, email, password, num, pNum) {
         this.registeredNumber = registeredNumber
         this.name = name
@@ -50,38 +40,6 @@ class Student {
             .catch(() => showMessage("Server error, Please check your connection.", STATUS.ERROR));
     }
 }
-
-export class Message {
-    static showMessage(msg, type = STATUS.INFO) {
-        const box = document.getElementById("message");
-        if (!box) return;
-        box.innerHTML = msg;
-        box.style.padding = "10px 15px";
-        box.style.marginTop = "10px";
-        box.style.borderRadius = "8px";
-        box.style.fontWeight = "600";
-        box.style.textAlign = "center";
-
-        if (type === "success") {
-            box.style.background = "#d4edda";
-            box.style.color = "#155724";
-            box.style.border = "1px solid #c3e6cb";
-        } else if (type === "error") {
-            box.style.background = "#f8d7da";
-            box.style.color = "#721c24";
-            box.style.border = "1px solid #f5c6cb";
-        } else {
-            box.style.background = "#cce5ff";
-            box.style.color = "#004085";
-            box.style.border = "1px solid #b8daff";
-        }
-    }
-}
-
-function showMessage(msg, type = STATUS.INFO) {
-    Message.showMessage(msg, type)
-}
-
 if (window.location.pathname.endsWith("home.html")) {
     document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("registerForm").addEventListener("submit", (e) => {

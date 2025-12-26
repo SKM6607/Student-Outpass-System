@@ -14,7 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Arrays;
 
-@WebServlet("/studentOutpasses")
+@WebServlet("/secure/studentOutpasses")
 @MultipartConfig
 public class SendOutpassesAPI extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse res)
@@ -22,16 +22,13 @@ public class SendOutpassesAPI extends HttpServlet {
         res.setContentType("application/json");
         req.setCharacterEncoding("UTF-8");
         String regNo = req.getParameter("registeredNumber");
-        if (regNo == null || regNo.trim().isEmpty()) {
-            res.getWriter().print("[]");
-            return;
-        }
         try (Connection conn = DBConnector.getConnection()) {
             PreparedStatement ps = conn.prepareStatement("SELECT requestId,reason,applied_date,applied_time, leaving_date,leaving_time, expected_return_date,expected_return_time,type_of_outpass,proof_img, status FROM outpass_requests WHERE studentId = (SELECT id FROM students WHERE registeredNumber = ?)");
             ps.setString(1, regNo);
             ResultSet rs = ps.executeQuery();
             if(!rs.next()){
-                res.getWriter().print("[]");
+                res.setContentType("text/plain");
+                res.getWriter().print("[ERROR] | [SQL_ERROR] from SendOutpassesAPI");
                 return;
             }
             StringBuilder json = new StringBuilder("[");
@@ -80,7 +77,8 @@ public class SendOutpassesAPI extends HttpServlet {
                 requestDispatcher.forward(req,res);
             }
         } catch (Exception e) {
-            res.getWriter().print("[]");
+            res.setContentType("text/plain");
+            res.getWriter().print("[ERROR] | [SQL_CONNECTION_ERROR] from SendOutpassesAPI");
         }
     }
 }

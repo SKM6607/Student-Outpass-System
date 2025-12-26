@@ -1,6 +1,4 @@
-import {LOGGED_IN_STUDENT, Message, STATUS} from "./Main.js";
-import {returnClassBasedOnStatusCode} from "./StatusCodes.js";
-
+import {LOGGED_IN_STUDENT, showMessage, STATUS, returnClassBasedOnStatusCode, returnToHome} from "./Utility.js";
 document.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById("imageOverlay");
     const overlayImg = document.getElementById("overlayImg");
@@ -44,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const chosenToDate = new Date(to.value);
         rDay.value = days[chosenToDate?.getDay()];
     });
-    const showMessage = Message.showMessage
     displayStudentOutpasses()
     function applyOutpass(reason, fromDate, toDate, leavingTime, expectedReturnTime, image = null) {
         const student = JSON.parse(localStorage.getItem(LOGGED_IN_STUDENT));
@@ -248,6 +245,6 @@ function defaultOutpassForm() {
 
 function logoutStudent() {
     localStorage.removeItem(LOGGED_IN_STUDENT);
-    Message.showMessage("Logging you out...", STATUS.INFO);
-    setTimeout(() => (window.location.href = "homehome.html"), 1000);
+    showMessage("Logging you out...", STATUS.INFO);
+    setTimeout(() => returnToHome(), 1000);
 }

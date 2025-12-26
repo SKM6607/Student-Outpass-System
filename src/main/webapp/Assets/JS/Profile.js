@@ -1,5 +1,4 @@
-import {LOGGED_IN_STUDENT, returnToHome} from "./Main.js";
-import {returnClassBasedOnStatusCode} from "./StatusCodes.js";
+import {LOGGED_IN_STUDENT, returnClassBasedOnStatusCode, returnToHome} from "./Utility.js";
 
 const student = JSON.parse(localStorage.getItem(LOGGED_IN_STUDENT));
 const studentDetailsDiv = document.getElementById("studentDetails");
@@ -8,7 +7,7 @@ let parentMobile = "";
 (student) || (window.location.href = "login.html");
 
 function fetchStudentDetailsAndDisplay() {
-    fetch(`studentDetails`, {
+    fetch(`/secure/studentDetails`, {
         method: "POST",
         headers: {"Content-Type": "application/x-www-form-urlencoded"},
         body: `registeredNumber=${encodeURIComponent(student.registeredNumber)}`
@@ -32,9 +31,12 @@ function fetchStudentDetailsAndDisplay() {
             <p><strong>Parent Mobile Number:</strong> ${parentMobile}</p>
         `;
         });
-}function returnFullURLToShowOutpass(id){
+}
+
+function returnFullURLToShowOutpass(id) {
     return `outpassDetails.html?requestId=${id}`
 }
+
 function displayStudentOutpassHistoryAsTable() {
     fetch(`student_outpasses?registeredNumber=${encodeURIComponent(student.registeredNumber)}`)
         .then(res => res.json())
@@ -68,13 +70,12 @@ function displayStudentOutpassHistoryAsTable() {
                 historyTable.innerHTML += `
                 <tr>
                     <td>${outpass.requestId}</td>
-                    <td>${outpass.reason}</td>
                     <td>${outpass.applied_date}</td>
                     <td>${outpass.from_date}</td>
                     <td>${outpass.to_date}</td>
                     <td class="${returnClassBasedOnStatusCode(outpass.status)}">${outpass.status}</td>
                     <td class="${returnClassBasedOnStatusCode(outpass.type_of_outpass)}">${outpass.type_of_outpass}</td>
-                    <td><a class="outpass-view-more" href="${showFullDetailsOfAnOutpass(outpass.requestId)}">VIEW</a></td>
+                    <td><a class="outpass-view-more" href="${returnFullURLToShowOutpass(outpass.requestId)}">VIEW</a></td>
                 </tr>
             `;
             });
@@ -86,12 +87,12 @@ function displayStudentOutpassHistoryAsTable() {
 
 document.addEventListener("DOMContentLoaded", () => {
     const logoutBtn = document.querySelector(".logout-btn");
-
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", () => {
-            localStorage.clear();
-            sessionStorage.clear();
-            returnToHome();
-        });
-    }
+    fetchStudentDetailsAndDisplay();
+    displayStudentOutpassHistoryAsTable();
+    if (!logoutBtn) return;
+    logoutBtn.addEventListener("click", () => {
+        localStorage.clear();
+        sessionStorage.clear();
+        returnToHome();
+    });
 });

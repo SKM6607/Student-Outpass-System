@@ -1,5 +1,4 @@
-import {returnToHome} from "./Main.js";
-
+import {returnToHome} from "./Utility.js";
 document.addEventListener("DOMContentLoaded", () => {
     const logoutBtn = document.querySelector(".logout-btn");
 

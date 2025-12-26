@@ -1,11 +1,8 @@
-import {LOGGED_IN_STUDENT, Message, STATUS} from "./Main.js";
-import {STATUS_CODES} from "./StatusCodes.js";
+import {LOGGED_IN_STUDENT, showMessage, STATUS,returnClassBasedOnStatusCode, STATUS_CODES} from "./Utility.js";
 import QRCode from "https://cdn.jsdelivr.net/npm/qrcode@1.5.4/+esm";
-
 document.addEventListener("DOMContentLoaded", () => {
     const currentStudent = JSON.parse(localStorage.getItem(LOGGED_IN_STUDENT));
-    console.log(currentStudent);
-    fetch(`student_outpasses`, {
+    fetch(`/secure/studentOutpasses`, {
         method: "POST",
         headers: {"Content-Type": "application/x-www-form-urlencoded"},
         body: `registeredNumber=${currentStudent.registeredNumber}`
@@ -13,13 +10,13 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(res => res.json())
         .then(outpasses => {
             console.log(outpasses)
-            const activeOutpass =
-                outpasses.find(outpass =>
-                    (outpass.status === STATUS_CODES.PENDING || outpass.status === STATUS_CODES.APPROVED_AND_OPEN) &&
-                    outpass.type_of_outpass !== "Medical"
+            const activeOutpass = outpasses.find
+                (
+                    outpass => outpass.status === STATUS_CODES.APPROVED_AND_OPEN && outpass.type_of_outpass !== "Medical"
                 );
             if (!activeOutpass) {
-                Message.showMessage("No active outpasses yet.", STATUS.SUCCESS);
+                //TODO: INSTEAD OF A LAME SHOW_MESSAGE DISPLAY PAGE WITH NO ACTIVE OUTPASSES
+                showMessage("You have no active outpasses", STATUS.SUCCESS);
                 return;
             }
             const statusSelector=document.querySelector('#status-of-outpass');
@@ -38,20 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
             outpassFields.numberOfDays.textContent = String((new Date(to)).getDay() - (new Date(from)).getDay())
             outpassFields.appliedDuring.textContent = activeOutpass.applied_date;
             outpassFields.status.textContent = activeOutpass.status.toUpperCase();
-            const classCode=(status)=>{
-                if(status===STATUS_CODES.PENDING){
-                    return STATUS_CODES.PENDING.toLowerCase();
-                }
-                else if(status.includes("&")){
-                    return STATUS_CODES.APPROVED_AND_OPEN.split("&")[0].toLowerCase();
-                }
-                return STATUS_CODES.REJECTED;
-            }
-            statusSelector.classList.add(`${classCode(activeOutpass.status)}`);
-            const data = Object.freeze({
-                id: activeOutpass.id,
-                status_of_outpass: activeOutpass.status
-            });
+            statusSelector.classList.add(`${returnClassBasedOnStatusCode(activeOutpass.status)}`);
+            const data = Object.freeze({id: activeOutpass.id}); //SHA 256 Encryption...
             const qrData = JSON.stringify(data);
             QRCode.toCanvas(document.getElementById('qr-canvas'), qrData,
                 {width: 250},

@@ -1,6 +1,5 @@
 import {LOGGED_IN_STUDENT, Message, SEC, STATUS} from "./Main.js";
 import { InputVerifier } from "./InputVerifier.js";
-
 const showMessage = Message.showMessage;
 function loginStudent(email, password) {
     showMessage("Logging in, please wait...");
@@ -47,7 +46,6 @@ function loginStudent(email, password) {
             }
         );
 }
-
 document.getElementById("loginForm").addEventListener("submit", (e) => {
     e.preventDefault();
     const result = InputVerifier.verifyLogin(
