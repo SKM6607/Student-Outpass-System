@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Admin QR Scanner | SRM Outpass</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" href="Assets/style.css" />
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="navbar student-navbar">
+    <div class="left-section">
+        <img src="Assets/Images/srm_logo.png" class="logo" alt="SRM Logo" />
+        <h1 class="dashboard-title">Admin Dashboard</h1>
+    </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="scanner-container">
+    <h2>Scan Student Outpass QR</h2>
+
+    <div id="qr-reader"></div>
+
+    <div id="outpassDetails" class="outpass-details hidden">
+        <h3>Outpass Details</h3>
+        <p><strong>Outpass ID:</strong> <span id="opId"></span></p>
+        <p><strong>Register No:</strong> <span id="regNo"></span></p>
+        <p><strong>Name:</strong> <span id="studentName"></span></p>
+        <p><strong>Reason:</strong> <span id="reason"></span></p>
+        <p><strong>From:</strong> <span id="fromDate"></span></p>
+        <p><strong>To:</strong> <span id="toDate"></span></p>
+        <p><strong>Status:</strong> <span id="status"></span></p>
+
+        <button id="closeOutpassBtn" class="btn danger">Close Outpass</button>
+    </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="app-footer">
+    <p>© SRM Institute of Science and Technology</p>
+    <a href="adminLogin.html">
+        <button class="logout-btn">Logout</button>
+    </a>
+</footer>
+
+<!-- QR LIB -->
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<!-- PAGE SCRIPT -->
+<script type="module" src="Assets/JS/adminQrScanner.js"></script>
+
+</body>
+</html>
