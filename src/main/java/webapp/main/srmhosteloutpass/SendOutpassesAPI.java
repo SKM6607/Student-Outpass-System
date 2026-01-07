@@ -14,27 +14,12 @@ import java.sql.ResultSet;
 @WebServlet("/studentOutpasses")
 public class SendOutpassesAPI extends HttpServlet {
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse res)
-            throws IOException {
-
-        res.setContentType("application/json");
-        req.setCharacterEncoding("UTF-8");
-
-        String regNo = req.getParameter("registeredNumber");
-
-        if (regNo == null || !regNo.startsWith("RA")) {
-            res.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                    "Invalid registeredNumber");
-            return;
-        }
-
-        try (Connection conn = DBConnector.getConnection()) {
-
-            PreparedStatement ps = conn.prepareStatement("""
-                SELECT 
+    private static String getSql(boolean all) {
+        String sql = """
+                SELECT
                     r.requestId,
                     s.name,
+                    s.registeredNumber,
                     r.reason,
                     r.applied_date,
                     r.applied_time,
@@ -47,15 +32,43 @@ public class SendOutpassesAPI extends HttpServlet {
                     r.status
                 FROM outpass_requests r
                 JOIN students s ON r.studentId = s.id
-                WHERE s.registeredNumber = ?
-            """);
+                """;
+        if (!all) {
+            sql += " WHERE s.registeredNumber = ?";
+        }
+        return sql;
+    }
 
-            ps.setString(1, regNo);
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse res)
+            throws IOException {
+
+        res.setContentType("application/json");
+        req.setCharacterEncoding("UTF-8");
+
+        String regNo = req.getParameter("registeredNumber");
+        if(regNo==null){
+            System.out.println("Registered Number is NULL");
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    "Invalid registeredNumber");
+            return;
+        }
+        boolean all = regNo.startsWith("*");
+        if (!regNo.startsWith("RA") && !all) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    "Invalid registeredNumber");
+            return;
+        }
+
+        try (Connection conn = DBConnector.getConnection()) {
+            String sql = getSql(all);
+            PreparedStatement ps = conn.prepareStatement(sql);
+            if (!all) {
+                ps.setString(1, regNo);
+            }
             ResultSet rs = ps.executeQuery();
-
             StringBuilder json = new StringBuilder("[");
             boolean first = true;
-
             while (rs.next()) {
 
                 if (!first) json.append(",");
@@ -70,22 +83,22 @@ public class SendOutpassesAPI extends HttpServlet {
                         : null;
 
                 json.append("""
-                    {
-                      "id": "%s",
-                      "name": "%s",
-                      "reason": "%s",
-                      "applied_date": "%s",
-                      "applied_time": "%s",
-                      "expected_leaving_date": "%s",
-                      "expected_leaving_time": "%s",
-                      "expected_return_date": "%s",
-                      "actual_return_date": "%s",
-                      "actual_return_time": "%s",
-                      "type_of_outpass": "%s",
-                      "status": "%s",
-                      "proof_url": %s
-                    }
-                    """.formatted(
+                        {
+                          "id": "%s",
+                          "name": "%s",
+                          "reason": "%s",
+                          "applied_date": "%s",
+                          "applied_time": "%s",
+                          "expected_leaving_date": "%s",
+                          "expected_leaving_time": "%s",
+                          "expected_return_date": "%s",
+                          "actual_return_date": "%s",
+                          "actual_return_time": "%s",
+                          "type_of_outpass": "%s",
+                          "status": "%s",
+                          "proof_url": %s
+                        }
+                        """.formatted(
                         requestId,
                         rs.getString("name"),
                         rs.getString("reason"),
